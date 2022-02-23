@@ -148,6 +148,9 @@ def get_new_leads():
 def send_lead(lead):
     api_token = conf['crm']['token']
 
+    if lead['owner_email'] not in conf['crm']['user_ids']:
+        return
+
     if conf['debug']: # enviar dados para a conta dev no modo de debug
         lead['owner_email'] = 'dev@seguralta.com.br'
         lead['owner_name'] = 'dev'

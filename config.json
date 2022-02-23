@@ -1,0 +1,47 @@
+{
+    "debug": false,
+    "crm": {
+        "token": "",
+        "deal_stage_id": "617fe1cd1930e3000cf8b565",
+        "user_ids": {
+            "andressa.leads@seguralta.com.br": "60db21b91ae315000bfe34f5",
+            "bruno.tonsig@seguralta.com.br": "60da23e6023aa100151e9223",
+            "dev@seguralta.com.br": "617ae8302e04bf0016148ef5"
+        },
+        "cf_lead_type_id": "611ec22a03cd58001177a34e"
+    },
+    "lead_types": {
+        "1": "AUTO",
+        "2": "VIDA",
+        "3": "RESIDENCIAL",
+        "4": "VIAGEM",
+        "5": "PORTÁTEIS",
+        "6": "ACIDENTES PESSOAIS",
+        "7": "BIKE",
+        "8": "SAÚDE",
+        "9": "ODONTO",
+        "10": "MULHER",
+        "11": "HOMEM",
+        "12": "CONSÓRCIO",
+        "13": "EDUCACIONAL",
+        "14": "PET",
+        "15": "PREVIDENCIA",
+        "18": "MOTO",
+        "19": "FROTA",
+        "21": "AGRICOLA",
+        "28": "ALUGUEL"
+    },
+    "last_execution": "2021-11-25T16:45:01.295978",
+    "users": [
+        {
+            "name": "Andressa Vieira da Silva",
+            "email": "andressa.leads@seguralta.com.br"
+        },
+        {
+            "name": "Bruno Tonsig",
+            "email": "bruno.tonsig@seguralta.com.br"
+        }
+    ],
+    "last_user_index": 1,
+    "log_directory": "logs"
+}
