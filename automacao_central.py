@@ -243,10 +243,10 @@ if __name__ == "__main__":
     if conf['debug']:
         log_level = logging.DEBUG  
 
+    handler = logging.FileHandler(log_file, encoding='utf-8')
     logging.basicConfig(
-        filename=log_file,
+        handlers=[handler],
         level=log_level,
-        encoding='utf-8',
         format='%(asctime)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
