@@ -5,6 +5,7 @@ import json
 import logging
 import requests
 import os
+import pytz
 import sys
 
 
@@ -84,8 +85,9 @@ def create_lead(cursor, row):
 def get_new_leads():
     cnx = connect_to_database()
     cursor = cnx.cursor()
-    start_dt = read_last_execution_time()
-    end_dt = datetime.now()
+    sp_tz = pytz.timezone("America/Sao_Paulo")
+    start_dt = read_last_execution_time().astimezone(sp_tz)
+    end_dt = datetime.now().astimezone(sp_tz)
     logging.info('Buscando leads comprados desde {} até {}'.format(start_dt, end_dt))
     write_last_execution_time(end_dt)
     query = ("""
