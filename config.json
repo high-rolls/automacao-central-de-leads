@@ -1,7 +1,7 @@
 {
-    "debug": false,
+    "debug": true,
     "crm": {
-        "token": "",
+        "token": "617ae8312e04bf0016148ef7",
         "deal_stage_id": "617fe1cd1930e3000cf8b565",
         "user_ids": {
             "andressa.leads@seguralta.com.br": "60db21b91ae315000bfe34f5",
@@ -31,7 +31,7 @@
         "21": "AGRICOLA",
         "28": "ALUGUEL"
     },
-    "last_execution": "2021-11-25T16:45:01.295978",
+    "last_execution": "2022-02-24T15:00:01.295978",
     "users": [
         {
             "name": "Andressa Vieira da Silva",
