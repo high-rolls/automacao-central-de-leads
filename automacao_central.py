@@ -134,10 +134,9 @@ def get_new_leads():
         where li.lead = {}
         '''.format(lead['id'])
         cursor.execute(query)
-        info = ""
+        info = {} # dicionario de dados contendo as informacoes adicionais do lead
         for (param, value) in cursor:
-            info += "{}: {}\n".format(param, value)
-        info = info.strip()
+            info[param] = value
         lead['info'] = info
 
     cursor.close()
@@ -185,13 +184,27 @@ def send_lead(lead):
         },
     }
     # Coloca o tipo do lead em um campo customizado
+    custom_fields = []
+
     if lead['type'] in conf['lead_types']:
-        body['deal']['deal_custom_fields'] = [
+        custom_fields.append(
             {
                 'custom_field_id': conf['crm']['cf_lead_type_id'],
                 'value': conf['lead_types'][lead['type']]
             }
-        ]
+        )
+    
+    for param in lead['info']:
+        if param in conf['crm']['custom_field_ids']:
+            custom_fields.append(
+                {
+                    'custom_field_id': conf['crm']['custom_field_ids'][param],
+                    'value': lead['info'][param]
+                }
+            )
+
+    
+    body['deal']['deal_custom_fields'] = custom_fields
     res = requests.post(url, json=body)
     res.raise_for_status()
     ro = json.loads(res.text)

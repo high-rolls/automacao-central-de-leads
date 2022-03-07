@@ -1,14 +1,38 @@
 {
     "debug": true,
     "crm": {
-        "token": "617ae8312e04bf0016148ef7",
-        "deal_stage_id": "617fe1cd1930e3000cf8b565",
+        "token": "620fcefe09cdbf00110b9727",
+        "deal_stage_id": "61f92d7b1844e3000dcc4c51",
         "user_ids": {
             "andressa.leads@seguralta.com.br": "60db21b91ae315000bfe34f5",
             "bruno.tonsig@seguralta.com.br": "60da23e6023aa100151e9223",
             "dev@seguralta.com.br": "617ae8302e04bf0016148ef5"
         },
-        "cf_lead_type_id": "611ec22a03cd58001177a34e"
+        "cf_lead_type_id": "6206b9bcb8b432000c622bed",
+        "custom_field_ids": {
+            "AnoFabricacao": "620e961abbac0a000c5a12b2",
+            "AnoModelo": "620e9652c231fa000d2cd3d4",
+            "CEPMaiorDeslocamento": "620e96a1dc3c810012755327",
+            "CEPPernoite": "620e96aba5785c0011feb020",
+            "CPFSegurado": "620e96c881f1d300144a5a8b",
+            "DataNascCondutor": "620e97180571c0000f534965",
+            "DataNascSegurado": "620e9707bf9428000d52bfdf",
+            "EstadoCivil": "620e97367f19de000fde9f3e",
+            "JaPossuiSeguroParaEsteVeiculo": "620e9872c231fa000f2cd6d7",
+            "MaisdeUmCarro": "620e988452d576000e8aab35",
+            "Marca": "620e988c4171ae000f7e648b",
+            "Modelo": "620e98991dbb97000e181e13",
+            "ParaQueUsaCarro": "620e99665601b70012872f2f",
+            "PlacaCarro": "620e997183a82f000f4c6c56",
+            "AtividadeProfissional": "620e99a75a3fea000f95531d",
+            "AtividadeProfissionalCondutor": "620e99b3475b420011f67223",
+            "QuantosVeiculos": "620e99d620f9a3000c4f3eb3",
+            "SeguradoEhProprietario": "620e99e3ed4229000c98c47e",
+            "TemVagaNaResidencia": "620e99ef475b420011f6724f",
+            "TempoHabilitacao": "620e99fd20f9a3000c4f3ef0",
+            "TipoResidenciaCondutor": "620e9a0b35919c000f73c24f",
+            "ZeroQuilometro": "620e9a24d510b0000d218800"
+        }
     },
     "lead_types": {
         "1": "AUTO",
@@ -16,22 +40,13 @@
         "3": "RESIDENCIAL",
         "4": "VIAGEM",
         "5": "PORTÁTEIS",
-        "6": "ACIDENTES PESSOAIS",
         "7": "BIKE",
         "8": "SAÚDE",
-        "9": "ODONTO",
-        "10": "MULHER",
-        "11": "HOMEM",
         "12": "CONSÓRCIO",
-        "13": "EDUCACIONAL",
-        "14": "PET",
-        "15": "PREVIDENCIA",
         "18": "MOTO",
-        "19": "FROTA",
-        "21": "AGRICOLA",
         "28": "ALUGUEL"
     },
-    "last_execution": "2022-02-24T15:00:01.295978",
+    "last_execution": "2022-03-04T15:36:35.213326-03:00",
     "users": [
         {
             "name": "Andressa Vieira da Silva",
@@ -42,6 +57,6 @@
             "email": "bruno.tonsig@seguralta.com.br"
         }
     ],
-    "last_user_index": 1,
+    "last_user_index": 0,
     "log_directory": "logs"
 }
