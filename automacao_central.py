@@ -88,7 +88,7 @@ def get_new_leads():
     sp_tz = pytz.timezone("America/Sao_Paulo")
     start_dt = read_last_execution_time().astimezone(sp_tz)
     end_dt = datetime.now().astimezone(sp_tz)
-    logging.info('Buscando leads comprados desde {} até {}'.format(start_dt, end_dt))
+    #logging.info('Buscando leads comprados desde {} até {}'.format(start_dt, end_dt))
     write_last_execution_time(end_dt)
     query = ("""
     select l.id, l.consumer_name, l.consumer_email, l.phones, u.name, u.email, l.type, l.created_at, l.paid_at from balances b
@@ -142,7 +142,8 @@ def get_new_leads():
 
     cursor.close()
     cnx.close()
-    logging.info('{} leads encontrados'.format(len(leads)))
+    if len(leads) > 0:
+        logging.info('{} leads encontrados'.format(len(leads)))
     
     return leads
 
@@ -251,6 +252,6 @@ if __name__ == "__main__":
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     sys.excepthook = handle_exception # faz com que erros de execucao sejam logados
-    logging.info('INÍCIO DA EXECUÇÃO')
+    #logging.info('INÍCIO DA EXECUÇÃO')
     leads = get_new_leads()
     send_leads(leads)
