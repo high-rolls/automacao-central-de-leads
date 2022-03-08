@@ -1,10 +1,10 @@
 {
-    "debug": true,
+    "debug": false,
     "crm": {
         "token": "620fcefe09cdbf00110b9727",
         "deal_stage_id": "61f92d7b1844e3000dcc4c51",
         "user_ids": {
-            "andressa.leads@seguralta.com.br": "60db21b91ae315000bfe34f5",
+            "andressa.leads@seguralta.com.br": "62011b01f901b1000fcf8582",
             "bruno.tonsig@seguralta.com.br": "60da23e6023aa100151e9223",
             "dev@seguralta.com.br": "617ae8302e04bf0016148ef5"
         },
@@ -46,7 +46,7 @@
         "18": "MOTO",
         "28": "ALUGUEL"
     },
-    "last_execution": "2022-03-04T15:36:35.213326-03:00",
+    "last_execution": "2022-03-08T10:33:02.000993-03:00",
     "users": [
         {
             "name": "Andressa Vieira da Silva",

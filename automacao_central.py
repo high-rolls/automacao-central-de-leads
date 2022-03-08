@@ -222,17 +222,6 @@ def send_lead(lead):
         Email Responsavel: %s''',
         lead['id'], lead['name'], lead['email'], lead['created_at'], lead['paid_at'],
         ro['user']['id'], ro['user']['name'], ro['user'].get('email', '-'))
-    # Envio das informacoes adicionais como anotacao no RD Station
-    ro = json.loads(res.text)
-    url = 'https://plugcrm.net/api/v1/activities?token={}'.format(conf['crm']['token'])
-    body = {
-        'activity': {
-            'user_id': owner_id,
-            'deal_id': ro['_id'],
-            'text': lead['info']
-        }
-    }
-    res = requests.post(url, json=body)
 
 
 def send_leads(leads):
