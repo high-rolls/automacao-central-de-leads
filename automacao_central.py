@@ -1,6 +1,7 @@
 from datetime import datetime
 import mysql.connector
 from mysql.connector import errorcode
+import argparse
 import json
 import logging
 import requests
@@ -49,6 +50,23 @@ def pick_user():
     conf['last_user_index'] = (ui + 1) % len(users)
     save_configuration()
     return user
+
+
+def load_RDS_users():
+    url = f"https://plugcrm.net/api/v1/users?token={conf['crm']['token']}"
+    response = requests.get(url)
+    response.raise_for_status()
+    obj = json.loads(response.text)
+    users = obj['users']
+    return users
+
+
+def update_users():
+    users = load_RDS_users()
+    for user in users:
+        email = user['email']
+        conf['crm']['user_ids'][email] = user['id']
+    save_configuration()
 
 
 def create_lead(cursor, row):
@@ -234,6 +252,14 @@ def handle_exception(type, value, traceback):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Script de integracao da Central de Leads com o RD Station"
+    )
+    parser.add_argument("-u", "--update-users",
+        help="Atualiza a lista de usuarios do arquivo de configuracao",
+        action="store_true")
+    args = parser.parse_args()
+
     log_dir = conf['log_directory']
 
     if not os.path.exists(log_dir):
@@ -254,5 +280,8 @@ if __name__ == "__main__":
     )
     sys.excepthook = handle_exception # faz com que erros de execucao sejam logados
     logging.info('INÍCIO DA EXECUÇÃO')
+    if args.update_users:
+        update_users()
+        sys.exit()
     leads = get_new_leads()
     send_leads(leads)
