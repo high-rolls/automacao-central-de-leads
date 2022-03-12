@@ -12,6 +12,38 @@ import sys
 
 CONFIG_PATH = 'config.json'
 
+cdl_bought_leads_query = """
+select l.id, l.consumer_name, l.consumer_email, l.phones, u.name, u.email, l.type, l.created_at, l.paid_at from balances b
+join users u
+on b.user = u.id 
+join leads l
+on l.id = b.auth_id
+where b.company = 1448
+and b.created_at between '{}' and '{}'
+and description like "Compra de Lead%"
+and (l.refund is null or l.refund = 0)
+order by b.created_at asc;
+"""
+
+cdl_expired_leads_query = """
+SELECT l.id, l.consumer_name, l.consumer_email, l.phones, l.type, l.created_at, l.paid_at FROM leads l
+WHERE l.expired = 1
+AND l.company = 1448
+AND l.paid_at BETWEEN '{}' AND '{}'
+AND (l.refund IS NULL or l.refund = 0)
+ORDER BY paid_at ASC
+"""
+
+my_leads_query = """
+SELECT l.id, l.consumer_name, l.consumer_email, l.phones, c.name, c.email, l.type, l.created_at, l.paid_at
+FROM leads l
+JOIN companies c 
+ON l.company = c.company
+WHERE l.status in('new')
+AND c.company != 1448
+AND l.paid_at BETWEEN '{}' AND '{}'
+ORDER BY l.paid_at DESC;
+"""
 
 def load_configuration():
     with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
@@ -73,8 +105,8 @@ def create_lead(cursor, row):
     lead = {}
 
     for i in range(len(cursor.column_names)):
-        cn = cursor.column_names[i]
-        lead[cn] = row[i]
+        column_name = cursor.column_names[i]
+        lead[column_name] = row[i]
     
     owner_name = lead.pop('name', '')
     owner_email  = lead.pop('email', '')
@@ -100,51 +132,28 @@ def create_lead(cursor, row):
     return lead
 
 
+def db_load_leads(cursor, query):
+    leads = []
+    cursor.execute(query)
+    for row in cursor:
+        lead = create_lead(cursor, row)
+        if lead['owner_email'] in conf['crm']['user_ids']:
+            leads.append(lead)
+    return leads
+
+
 def get_new_leads():
     cnx = connect_to_database()
     cursor = cnx.cursor()
-    sp_tz = pytz.timezone("America/Sao_Paulo")
-    start_dt = read_last_execution_time().astimezone(sp_tz)
-    end_dt = datetime.now().astimezone(sp_tz)
+    db_timezone = pytz.timezone("America/Sao_Paulo")
+    start_dt = read_last_execution_time().astimezone(db_timezone)
+    end_dt = datetime.now().astimezone(db_timezone)
     logging.info('Buscando leads comprados desde {} até {}'.format(start_dt, end_dt))
     write_last_execution_time(end_dt)
-    query = ("""
-    select l.id, l.consumer_name, l.consumer_email, l.phones, u.name, u.email, l.type, l.created_at, l.paid_at from balances b
-    join users u
-    on b.user = u.id 
-    join leads l
-    on l.id = b.auth_id
-    where b.company = 1448
-    and b.created_at between '{}' and '{}'
-    and description like "Compra de Lead%"
-    and (l.refund is null or l.refund = 0)
-    order by b.created_at asc;
-    """.format(start_dt, end_dt))
-    cursor.execute(query)
-    leads = []
-
-    for row in cursor:
-        lead = create_lead(cursor, row)
-        leads.append(lead)
-    
-    expired_leads_query = """
-    SELECT l.id, l.consumer_name, l.consumer_email, l.phones, l.type, l.created_at, l.paid_at FROM leads l
-    WHERE l.expired = 1
-    AND l.company = 1448
-    AND l.paid_at BETWEEN '{}' AND '{}'
-    AND (l.refund IS NULL or l.refund = 0)
-    ORDER BY paid_at ASC
-    """.format(start_dt, end_dt)
-    cursor.execute(expired_leads_query)
-    expired_leads = []
-
-    for row in cursor:
-        lead = create_lead(cursor, row)
-        expired_leads.append(lead)
-
-    if len(expired_leads) > 0:
-        logging.info('%d leads expirados encontrados', len(expired_leads))
-        leads = leads + expired_leads
+    cdl_leads = db_load_leads(cursor, cdl_bought_leads_query.format(start_dt, end_dt))
+    expired_leads = db_load_leads(cursor, cdl_expired_leads_query.format(start_dt, end_dt))
+    my_leads = db_load_leads(cursor, my_leads_query.format(start_dt, end_dt))
+    leads = cdl_leads + expired_leads + my_leads
 
     for lead in leads:
         query = '''
@@ -159,7 +168,8 @@ def get_new_leads():
 
     cursor.close()
     cnx.close()
-    logging.info('{} leads encontrados'.format(len(leads)))
+    if len(leads) > 0:
+        logging.info('{} leads encontrados'.format(len(leads)))
     
     return leads
 

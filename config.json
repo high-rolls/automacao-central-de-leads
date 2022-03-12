@@ -6,7 +6,11 @@
         "user_ids": {
             "andressa.leads@seguralta.com.br": "62011b01f901b1000fcf8582",
             "bruno.tonsig@seguralta.com.br": "60da23e6023aa100151e9223",
-            "dev@seguralta.com.br": "617ae8302e04bf0016148ef5"
+            "dev@seguralta.com.br": "617ae8302e04bf0016148ef5",
+            "andressa.silva@seguralta.com.br": "62011b01f901b1000fcf8582",
+            "beatriz@grupozanon.com.br": "5ef5fa9cd3306d00126e23bf",
+            "bolsa.corridadossonhos@seguralta.com.br": "6228de5c3cd38b0011bf11a0",
+            "rafael.leopoldino@seguralta.com.br": "621facfaeff84c0010e1c3a8"
         },
         "cf_lead_type_id": "6206b9bcb8b432000c622bed",
         "custom_field_ids": {
@@ -46,7 +50,7 @@
         "18": "MOTO",
         "28": "ALUGUEL"
     },
-    "last_execution": "2022-03-08T10:33:02.000993-03:00",
+    "last_execution": "2022-03-12T17:29:33.851321-03:00",
     "users": [
         {
             "name": "Andressa Vieira da Silva",
