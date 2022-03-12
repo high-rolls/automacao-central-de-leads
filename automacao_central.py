@@ -289,7 +289,6 @@ if __name__ == "__main__":
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     sys.excepthook = handle_exception # faz com que erros de execucao sejam logados
-    logging.info('INÍCIO DA EXECUÇÃO')
     if args.update_users:
         update_users()
         sys.exit()
