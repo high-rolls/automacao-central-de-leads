@@ -1,4 +1,5 @@
 from datetime import datetime
+from urllib.error import HTTPError
 import mysql.connector
 from mysql.connector import errorcode
 import argparse
@@ -168,7 +169,7 @@ def get_new_leads():
 
     cursor.close()
     cnx.close()
-    if len(leads) > 0:
+    if leads:
         logging.info('{} leads encontrados'.format(len(leads)))
     
     return leads
@@ -234,9 +235,10 @@ def send_lead(lead):
     
     body['deal']['deal_custom_fields'] = custom_fields
     res = requests.post(url, json=body)
-    res.raise_for_status()
-    ro = json.loads(res.text)
-    logging.info(
+    try:
+        res.raise_for_status()
+        ro = json.loads(res.text)
+        logging.info(
 '''Lead enviado para o RD Station CRM
     Central de Leads
         ID: %d
@@ -250,6 +252,10 @@ def send_lead(lead):
         Email Responsavel: %s''',
         lead['id'], lead['name'], lead['email'], lead['created_at'], lead['paid_at'],
         ro['user']['id'], ro['user']['name'], ro['user'].get('email', '-'))
+    except HTTPError:
+        logging.error("Erro ao enviar lead %s", lead[id])
+        ro = json.loads(res.text)
+        logging.error(json.dumps(ro, indent=4, ensure_ascii=False))
 
 
 def send_leads(leads):
