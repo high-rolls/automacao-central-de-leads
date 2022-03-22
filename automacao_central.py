@@ -40,7 +40,7 @@ SELECT l.id, l.consumer_name, l.consumer_email, l.phones, c.name, c.email, l.typ
 FROM leads l
 JOIN companies c 
 ON l.company = c.company
-WHERE l.status in('new')
+WHERE l.status in('new', 'waiting_proposal')
 AND c.company != 1448
 AND l.paid_at BETWEEN '{}' AND '{}'
 ORDER BY l.paid_at DESC;
