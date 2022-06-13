@@ -1,15 +1,15 @@
-from datetime import datetime
-from urllib.error import HTTPError
-import mysql.connector
-from mysql.connector import errorcode
 import argparse
+import dotenv
 import json
 import logging
-import requests
+import mysql.connector
 import os
 import pytz
+import requests
 import sys
-
+from datetime import datetime
+from mysql.connector import errorcode
+from urllib.error import HTTPError
 
 CONFIG_PATH = 'config.json'
 
@@ -71,12 +71,15 @@ def connect_to_database():
 
 
 def read_last_execution_time():
-    return datetime.fromisoformat(conf['last_execution'])
+    le = os.getenv('AUTOMACAO_CENTRAL_LAST_EXECUTION')
+    if le:
+        return datetime.fromisoformat(le)
+    else:
+        return None
 
 
 def write_last_execution_time(dt):
-    conf['last_execution'] = dt.isoformat()
-    save_configuration()
+    dotenv.set_key('.env', 'AUTOMACAO_CENTRAL_LAST_EXECUTION', dt.isoformat())
 
 
 def pick_user():
@@ -150,8 +153,14 @@ def get_new_leads():
     cnx = connect_to_database()
     cursor = cnx.cursor()
     db_timezone = pytz.timezone("America/Sao_Paulo")
-    start_dt = read_last_execution_time().astimezone(db_timezone)
-    end_dt = datetime.now().astimezone(db_timezone)
+    current_dt = datetime.now().astimezone(db_timezone)
+    start_dt = read_last_execution_time()
+    if not start_dt:
+        write_last_execution_time(current_dt)
+        logging.info("Data inicial de busca de leads configurada no sistema, encerrando...")
+        exit(0)
+    start_dt = start_dt.astimezone(db_timezone)
+    end_dt = current_dt
     logging.info('Buscando leads comprados desde {} até {}'.format(start_dt, end_dt))
     write_last_execution_time(end_dt)
     cdl_paid_leads = db_load_leads(cursor, cdl_paid_leads_query.format(start_dt, end_dt))
@@ -301,5 +310,8 @@ if __name__ == "__main__":
     if args.update_users:
         update_users()
         sys.exit()
+    
+    dotenv.load_dotenv()
+    
     leads = get_new_leads()
     send_leads(leads)
