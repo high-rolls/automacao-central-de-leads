@@ -13,7 +13,7 @@ import sys
 
 CONFIG_PATH = 'config.json'
 
-cdl_bought_leads_query = """
+cdl_paid_leads_query = """
 select l.id, l.consumer_name, l.consumer_email, l.phones, u.name, u.email, l.type, l.created_at, l.paid_at from balances b
 join users u
 on b.user = u.id 
@@ -26,13 +26,15 @@ and (l.refund is null or l.refund = 0)
 order by b.created_at asc;
 """
 
-cdl_expired_leads_query = """
-SELECT l.id, l.consumer_name, l.consumer_email, l.phones, l.type, l.created_at, l.paid_at FROM leads l
-WHERE l.expired = 1
+cdl_free_leads_query = """
+SELECT l.id, l.consumer_name, l.consumer_email, l.phones, l.type, l.created_at, l.paid_at
+FROM leads l
+WHERE l.status in('new', 'waiting_proposal')
 AND l.company = 1448
-AND l.paid_at BETWEEN '{}' AND '{}'
-AND (l.refund IS NULL or l.refund = 0)
-ORDER BY paid_at ASC
+AND (l.paid_price IS NULL OR l.paid_price = 0)
+AND (l.refund IS NULL OR l.refund = 0)
+AND l.paid_at BETWEEN '{}' AND ''
+ORDER BY l.paid_at DESC;
 """
 
 my_leads_query = """
@@ -45,6 +47,7 @@ AND c.company != 1448
 AND l.paid_at BETWEEN '{}' AND '{}'
 ORDER BY l.paid_at DESC;
 """
+
 
 def load_configuration():
     with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
@@ -151,10 +154,10 @@ def get_new_leads():
     end_dt = datetime.now().astimezone(db_timezone)
     logging.info('Buscando leads comprados desde {} até {}'.format(start_dt, end_dt))
     write_last_execution_time(end_dt)
-    cdl_leads = db_load_leads(cursor, cdl_bought_leads_query.format(start_dt, end_dt))
-    expired_leads = db_load_leads(cursor, cdl_expired_leads_query.format(start_dt, end_dt))
+    cdl_paid_leads = db_load_leads(cursor, cdl_paid_leads_query.format(start_dt, end_dt))
+    cdl_free_leads = db_load_leads(cursor, cdl_free_leads_query.format(start_dt, end_dt))
     my_leads = db_load_leads(cursor, my_leads_query.format(start_dt, end_dt))
-    leads = cdl_leads + expired_leads + my_leads
+    leads = cdl_paid_leads + cdl_free_leads + my_leads
 
     for lead in leads:
         query = '''
@@ -239,19 +242,19 @@ def send_lead(lead):
         res.raise_for_status()
         ro = json.loads(res.text)
         logging.info(
-'''Lead enviado para o RD Station CRM
-    Central de Leads
-        ID: %d
-        Nome: %s
-        Email: %s
-        Criado: %s
-        Comprado: %s
-    RD Station CRM
-        ID: %s
-        Responsavel: %s
-        Email Responsavel: %s''',
-        lead['id'], lead['name'], lead['email'], lead['created_at'], lead['paid_at'],
-        ro['user']['id'], ro['user']['name'], ro['user'].get('email', '-'))
+    '''Lead enviado para o RD Station CRM
+        Central de Leads
+            ID: %d
+            Nome: %s
+            Email: %s
+            Criado: %s
+            Comprado: %s
+        RD Station CRM
+            ID: %s
+            Responsavel: %s
+            Email Responsavel: %s''',
+            lead['id'], lead['name'], lead['email'], lead['created_at'], lead['paid_at'],
+            ro['user']['id'], ro['user']['name'], ro['user'].get('email', '-'))
     except HTTPError:
         logging.error("Erro ao enviar lead %s", lead[id])
         ro = json.loads(res.text)
