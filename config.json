@@ -10,7 +10,10 @@
             "andressa.silva@seguralta.com.br": "62011b01f901b1000fcf8582",
             "beatriz@grupozanon.com.br": "5ef5fa9cd3306d00126e23bf",
             "bolsa.corridadossonhos@seguralta.com.br": "6228de5c3cd38b0011bf11a0",
-            "rafael.leopoldino@seguralta.com.br": "621facfaeff84c0010e1c3a8"
+            "rafael.leopoldino@seguralta.com.br": "621facfaeff84c0010e1c3a8",
+            "andressa.vieira@seguralta.com.br": "62322bbb4ceb3600102b70a3",
+            "lucas@seguralta.com.br": "622f82f6df2c170012483e1d",
+            "patricia.silva@seguralta.com.br": "62a9df1367b3540019b7387e"
         },
         "cf_lead_type_id": "6206b9bcb8b432000c622bed",
         "custom_field_ids": {
@@ -55,10 +58,10 @@
             "name": "Andressa Vieira da Silva",
             "email": "andressa.leads@seguralta.com.br"
         },
-        {
-            "name": "Bruno Tonsig",
-            "email": "bruno.tonsig@seguralta.com.br"
-        }
+	{
+	    "name": "Patrícia Silva",
+	    "email": "patricia.silva@seguralta.com.br"
+	}
     ],
     "last_user_index": 0,
     "log_directory": "logs"
