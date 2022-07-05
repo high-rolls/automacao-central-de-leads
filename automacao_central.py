@@ -33,7 +33,7 @@ WHERE l.status in('new', 'waiting_proposal')
 AND l.company = 1448
 AND (l.paid_price IS NULL OR l.paid_price = 0)
 AND (l.refund IS NULL OR l.refund = 0)
-AND l.paid_at BETWEEN '{}' AND ''
+AND l.paid_at BETWEEN '{}' AND '{}'
 ORDER BY l.paid_at DESC;
 """
 
