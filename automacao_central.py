@@ -27,25 +27,56 @@ order by b.created_at asc;
 """
 
 cdl_free_leads_query = """
-SELECT l.id, l.consumer_name, l.consumer_email, l.phones, l.type, l.created_at, l.paid_at
-FROM leads l
-WHERE l.status in('new', 'waiting_proposal')
-AND l.company = 1448
-AND (l.paid_price IS NULL OR l.paid_price = 0)
-AND (l.refund IS NULL OR l.refund = 0)
-AND l.paid_at BETWEEN '{}' AND '{}'
-ORDER BY l.paid_at DESC;
+SELECT
+	l.id,
+	l.consumer_name,
+	l.consumer_email,
+	l.phones,
+	l.type,
+	l.created_at,
+	l.paid_at
+FROM
+	leads l
+WHERE
+	l.status in('new', 'waiting_proposal')
+	AND l.company = 1448
+	AND (l.paid_price IS NULL
+		OR l.paid_price = 0)
+	AND (l.refund IS NULL
+		OR l.refund = 0)
+	AND (
+  (l.paid_at BETWEEN '{}' AND '{}')
+		OR (l.paid_at IS NULL
+			AND l.created_at BETWEEN '{}' AND '{}')
+)
+ORDER BY
+	l.created_at DESC;
 """
 
 my_leads_query = """
-SELECT l.id, l.consumer_name, l.consumer_email, l.phones, c.name, c.email, l.type, l.created_at, l.paid_at
-FROM leads l
+SELECT
+	l.id,
+	l.consumer_name,
+	l.consumer_email,
+	l.phones,
+	c.name,
+	c.email,
+	l.type,
+	l.created_at,
+	l.paid_at
+FROM
+	leads l
 JOIN companies c 
-ON l.company = c.company
-WHERE l.status in('new', 'waiting_proposal')
-AND c.company != 1448
-AND l.paid_at BETWEEN '{}' AND '{}'
-ORDER BY l.paid_at DESC;
+ON
+	l.company = c.company
+WHERE
+	l.status in('new', 'waiting_proposal')
+	AND c.company != 1448
+	AND ((l.paid_at BETWEEN '{}' AND '{}')
+		OR (l.paid_at IS NULL
+			AND l.created_at BETWEEN '{}' AND '{}'))
+ORDER BY
+	l.paid_at DESC;
 """
 
 
@@ -164,8 +195,8 @@ def get_new_leads():
     logging.info('Buscando leads comprados desde {} até {}'.format(start_dt, end_dt))
     write_last_execution_time(end_dt)
     cdl_paid_leads = db_load_leads(cursor, cdl_paid_leads_query.format(start_dt, end_dt))
-    cdl_free_leads = db_load_leads(cursor, cdl_free_leads_query.format(start_dt, end_dt))
-    my_leads = db_load_leads(cursor, my_leads_query.format(start_dt, end_dt))
+    cdl_free_leads = db_load_leads(cursor, cdl_free_leads_query.format(start_dt, end_dt, start_dt, end_dt))
+    my_leads = db_load_leads(cursor, my_leads_query.format(start_dt, end_dt, start_dt, end_dt))
     leads = cdl_paid_leads + cdl_free_leads + my_leads
 
     for lead in leads:
