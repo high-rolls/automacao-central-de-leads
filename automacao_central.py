@@ -133,6 +133,7 @@ def load_RDS_users():
 
 def update_users():
     users = load_RDS_users()
+    conf['crm']['user_ids'].clear()
     for user in users:
         email = user['email']
         conf['crm']['user_ids'][email] = user['id']
